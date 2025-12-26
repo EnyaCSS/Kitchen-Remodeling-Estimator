@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Kitchen Calculator">
+    <title>Kitchen Calculator - 70% Profit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            padding: 15px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4299e1 0%, #007aff 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .profit-badge {
+            background: #2ecc71;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        
+        .section {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .section-title {
+            color: #333;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4299e1;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        input[type="number"] {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .unit {
+            color: #4299e1;
+            font-weight: 600;
+            min-width: 40px;
+            font-size: 16px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            accent-color: #4299e1;
+        }
+        
+        .checkbox-group label {
+            flex: 1;
+            margin-bottom: 0;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .checkbox-price {
+            color: #2ecc71;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        /* Quartz Level Selection */
+        .quartz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .quartz-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #e1e5e9;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quartz-option:hover {
+            border-color: #4299e1;
+        }
+        
+        .quartz-option.selected {
+            border-color: #4299e1;
+            background: #e6f2ff;
+        }
+        
+        .quartz-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            accent-color: #4299e1;
+        }
+        
+        .quartz-label {
+            flex: 1;
+        }
+        
+        .quartz-title {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .quartz-desc {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+        
+        .quartz-price {
+            color: #2ecc71;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: right;
+        }
+        
+        .total-section {
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .total-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #ddd;
+            color: #555;
+            font-size: 15px;
+        }
+        
+        .total-item:last-child {
+            border-bottom: none;
+        }
+        
+        .total-value {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .cost-total {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .cost-total .label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .cost-total .amount {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .final-price {
+            background: #2ecc71;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .final-price .label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .final-price .amount {
+            font-size: 36px;
+            font-weight: 700;
+        }
+        
+        .instructions {
+            text-align: center;
+            padding: 15px;
+            color: #666;
+            font-size: 13px;
+            border-top: 1px solid #eee;
+        }
+        
+        .note {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .countertop-info {
+            background: #f0f9ff;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #4299e1;
+            border-left: 4px solid #4299e1;
+        }
+        
+        /* Countertop breakdown */
+        .countertop-breakdown {
+            background: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid #e1e5e9;
+            font-size: 13px;
+        }
+        
+        .breakdown-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        
+        .breakdown-total {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #ddd;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .info-box {
+            background: #fff8e1;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #333;
+            border-left: 4px solid #ff9800;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧮 Kitchen Calculator</h1>
+            <p>70% Profit Margin Calculator</p>
+            <div class="profit-badge">Cost ÷ 0.30 = Final Price</div>
+        </div>
+        
+        <!-- Cabinet Measurements -->
+        <div class="section">
+            <div class="section-title">Cabinet Measurements (Linear Feet)</div>
+            
+            <div class="input-group">
+                <label>Base Cabinets on Walls</label>
+                <div class="input-row">
+                    <input type="number" id="base_main" value="0" min="0" step="0.5" oninput="calculate()">
+                    <span class="unit">LF</span>
+                </div>
+                <div class="note">Cost: $74 per linear foot</div>
+            </div>
+            
+            <div class="input-group">
+                <label>Base Cabinets on Island/Peninsula</label>
+                <div class="input-row">
+                    <input type="number" id="base_island" value="0" min="0" step="0.5" oninput="calculate()">
+                    <span class="unit">LF</span>
+                </div>
+                <div class="note">Cost: $74 per linear foot</div>
+            </div>
+            
+            <div class="input-group">
+                <label>Wall (Upper) Cabinets</label>
+                <div class="input-row">
+                    <input type="number" id="wall" value="0" min="0" step="0.5" oninput="calculate()">
+                    <span class="unit">LF</span>
+                </div>
+                <div class="note">Cost: $60 per linear foot</div>
+            </div>
+        </div>
+        
+        <!-- Countertop Section -->
+        <div class="section">
+            <div class="section-title">Countertop</div>
+            
+            <div class="countertop-info">
+                <strong>Auto-Calculated Square Footage:</strong><br>
+                (Base Walls LF × 2.5) + (Base Island LF × 4.0)<br>
+                Adjust if you have exact measurements.
+            </div>
+            
+            <div class="input-group">
+                <label>Countertop Square Footage</label>
+                <div class="input-row">
+                    <input type="number" id="countertop_sqft" value="0" min="0" step="0.5" oninput="calculate()">
+                    <span class="unit">sq ft</span>
+                </div>
+                <div class="note">Auto-calculated. Edit if needed.</div>
+            </div>
+            
+            <div class="quartz-options">
+                <div class="quartz-option" onclick="selectQuartzLevel(1)">
+                    <input type="radio" id="quartz_level1" name="quartz_level" value="1" checked onchange="calculate()">
+                    <div class="quartz-label">
+                        <div class="quartz-title">Level 1 - Basic Quartz</div>
+                        <div class="quartz-desc">1st slab included, extra slabs: $600 each</div>
+                    </div>
+                    <div class="quartz-price">$0 upgrade</div>
+                </div>
+                
+                <div class="quartz-option" onclick="selectQuartzLevel(2)">
+                    <input type="radio" id="quartz_level2" name="quartz_level" value="2" onchange="calculate()">
+                    <div class="quartz-label">
+                        <div class="quartz-title">Level 2 - Mid-Level Quartz</div>
+                        <div class="quartz-desc">Upgrade 1st slab: +$600, extra: $1,200 each</div>
+                    </div>
+                    <div class="quartz-price">+$600</div>
+                </div>
+                
+                <div class="quartz-option" onclick="selectQuartzLevel(3)">
+                    <input type="radio" id="quartz_level3" name="quartz_level" value="3" onchange="calculate()">
+                    <div class="quartz-label">
+                        <div class="quartz-title">Level 3 - High-Level Quartz</div>
+                        <div class="quartz-desc">Upgrade 1st slab: +$1,100, extra: $1,700 each</div>
+                    </div>
+                    <div class="quartz-price">+$1,100</div>
+                </div>
+            </div>
+            
+            <!-- Countertop Cost Breakdown (hidden initially) -->
+            <div class="countertop-breakdown" id="countertop_breakdown" style="display: none;">
+                <div id="breakdown_content">
+                    <!-- Dynamic content will go here -->
+                </div>
+            </div>
+            
+            <div class="note" style="margin-top: 15px;">
+                <strong>Fabrication/Installation:</strong> +$25 per sq ft (always applies)<br>
+                <strong>Slab size:</strong> 56 sq ft each (always round up)
+            </div>
+        </div>
+        
+        <!-- Item Add-Ons -->
+        <div class="section">
+            <div class="section-title">Item Add-Ons</div>
+            
+            <div class="input-group">
+                <label>Pantry/Tall Cabinets</label>
+                <input type="number" id="pantry" value="0" min="0" oninput="calculate()">
+                <div class="note">Cost: $611 each</div>
+            </div>
+            
+            <div class="input-group">
+                <label>Finished Side Panels</label>
+                <input type="number" id="panels" value="0" min="0" oninput="calculate()">
+                <div class="note">Cost: $110 each</div>
+            </div>
+            
+            <div class="input-group">
+                <label>Wall Fillers</label>
+                <input type="number" id="fillers" value="0" min="0" oninput="calculate()">
+                <div class="note">Cost: $30 each</div>
+            </div>
+            
+            <div class="input-group">
+                <label>Toe-Kick Sticks (8')</label>
+                <input type="number" id="toekick" value="0" min="0" oninput="calculate()">
+                <div class="note">Cost: $70 each</div>
+            </div>
+            
+            <div class="input-group">
+                <label>Open Shelves</label>
+                <input type="number" id="shelves" value="0" min="0" oninput="calculate()">
+                <div class="note">Cost: $166 each</div>
+            </div>
+        </div>
+        
+        <!-- Service Add-Ons -->
+        <div class="section">
+            <div class="section-title">Service Add-Ons</div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="demolition" onchange="calculate()">
+                <label for="demolition">Demolition</label>
+                <span class="checkbox-price">+ $30/box + $300</span>
+            </div>
+            
+            <div class="input-group" id="demolition-boxes" style="display: none; margin-top: -5px;">
+                <label>Number of Old Kitchen Boxes</label>
+                <input type="number" id="demolition_boxes" value="0" min="0" oninput="calculate()">
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="molding" onchange="calculate()">
+                <label for="molding">Crown Molding</label>
+                <span class="checkbox-price">+$1,200</span>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="soffit" onchange="calculate()">
+                <label for="soffit">Soffit Removal</label>
+                <span class="checkbox-price">+$2,500</span>
+            </div>
+        </div>
+        
+        <!-- Results -->
+        <div class="total-section">
+            <div class="section-title">Cost Breakdown</div>
+            
+            <div class="total-item">
+                <span>Base Cabinets Cost</span>
+                <span class="total-value">$<span id="price_base">0.00</span></span>
+            </div>
+            
+            <div class="total-item">
+                <span>Wall Cabinets Cost</span>
+                <span class="total-value">$<span id="price_wall">0.00</span></span>
+            </div>
+            
+            <div class="total-item">
+                <span>Countertop Cost</span>
+                <span class="total-value">$<span id="countertop_cost">0.00</span></span>
+            </div>
+            
+            <div class="total-item">
+                <span>Add-Ons Cost</span>
+                <span class="total-value">$<span id="addons_cost">0.00</span></span>
+            </div>
+            
+            <div class="cost-total">
+                <div class="label">TOTAL COST (30% of Final Price)</div>
+                <div class="amount">$<span id="total_cost">0.00</span></div>
+            </div>
+            
+            <div class="final-price">
+                <div class="label">FINAL PRICE TO CHARGE (70% Profit)</div>
+                <div class="amount">$<span id="final_price">0.00</span></div>
+            </div>
+            
+            <div class="info-box">
+                <strong>Formula:</strong> Final Price = Total Cost ÷ 0.30<br>
+                This ensures 30% covers costs, 70% is profit
+            </div>
+        </div>
+        
+        <div class="instructions">
+            All prices shown are COSTS • Final price includes 70% profit margin • Save to Home Screen
+        </div>
+    </div>
+
+    <script>
+        // Constants - ALL ARE COSTS
+        const RATE_BASE = 74; // $74 per linear foot (COST)
+        const RATE_WALL = 60; // $60 per linear foot (COST)
+        
+        // Add-on costs
+        const PRICE_PANTRY = 611;   // Tall cabinets cost
+        const PRICE_PANEL = 110;    // Side panels cost
+        const PRICE_FILLER = 30;    // Wall fillers cost
+        const PRICE_TOEKICK = 70;   // Toe-kick sticks cost
+        const PRICE_SHELF = 166;    // Shelves cost
+        
+        // Service add-ons
+        const PRICE_DEMOLITION_BASE = 300;
+        const PRICE_DEMOLITION_PER_BOX = 30;
+        const PRICE_MOLDING = 1200;
+        const PRICE_SOFFIT = 2500;
+        
+        // Countertop constants
+        const SLAB_SIZE = 56; // 56 sq ft per slab
+        const FABRICATION_RATE = 25; // $25 per sq ft
+        
+        // Quartz level pricing (COSTS)
+        const UPGRADE_LEVEL_2 = 600;  // $600 upgrade for first slab
+        const UPGRADE_LEVEL_3 = 1100; // $1,100 upgrade for first slab
+        
+        const SLAB_PRICE_1 = 600;  // Level 1 extra slab cost
+        const SLAB_PRICE_2 = 1200; // Level 2 extra slab cost
+        const SLAB_PRICE_3 = 1700; // Level 3 extra slab cost
+
+        function selectQuartzLevel(level) {
+            document.getElementById(`quartz_level${level}`).checked = true;
+            // Update visual selection
+            document.querySelectorAll('.quartz-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.querySelector(`#quartz_level${level}`).closest('.quartz-option').classList.add('selected');
+            calculate();
+        }
+        
+        function autoCalculateCountertop() {
+            const baseMain = parseFloat(document.getElementById('base_main').value) || 0;
+            const baseIsland = parseFloat(document.getElementById('base_island').value) || 0;
+            
+            // NEW FORMULA: (Base Walls × 2.5) + (Base Island × 4.0)
+            const countertopSqft = (baseMain * 2.5) + (baseIsland * 4.0);
+            const result = Math.round(countertopSqft * 10) / 10; // Round to 1 decimal
+            
+            return result;
+        }
+        
+        function calculateCountertopCost(countertopSqft, quartzLevel) {
+            // Calculate slabs needed (always round UP)
+            const slabsNeeded = Math.ceil(countertopSqft / SLAB_SIZE);
+            const extraSlabs = slabsNeeded - 1;
+            
+            let upgradeFee = 0;
+            let slabCost = 0;
+            let breakdown = [];
+            
+            // Calculate costs based on quartz level
+            switch(quartzLevel) {
+                case "1": // Level 1 - Basic Quartz
+                    upgradeFee = 0;
+                    slabCost = extraSlabs * SLAB_PRICE_1;
+                    
+                    breakdown.push(`First slab (${SLAB_SIZE} sq ft): Included in base price`);
+                    if (extraSlabs > 0) {
+                        breakdown.push(`${extraSlabs} extra slab(s) × $${SLAB_PRICE_1.toLocaleString()}: $${(extraSlabs * SLAB_PRICE_1).toLocaleString()}`);
+                    }
+                    break;
+                    
+                case "2": // Level 2 - Mid-Level Quartz
+                    upgradeFee = UPGRADE_LEVEL_2;
+                    slabCost = extraSlabs * SLAB_PRICE_2;
+                    
+                    breakdown.push(`Upgrade first slab to Level 2: $${UPGRADE_LEVEL_2.toLocaleString()}`);
+                    if (extraSlabs > 0) {
+                        breakdown.push(`${extraSlabs} extra slab(s) × $${SLAB_PRICE_2.toLocaleString()}: $${(extraSlabs * SLAB_PRICE_2).toLocaleString()}`);
+                    }
+                    break;
+                    
+                case "3": // Level 3 - High-Level Quartz
+                    upgradeFee = UPGRADE_LEVEL_3;
+                    slabCost = extraSlabs * SLAB_PRICE_3;
+                    
+                    breakdown.push(`Upgrade first slab to Level 3: $${UPGRADE_LEVEL_3.toLocaleString()}`);
+                    if (extraSlabs > 0) {
+                        breakdown.push(`${extraSlabs} extra slab(s) × $${SLAB_PRICE_3.toLocaleString()}: $${(extraSlabs * SLAB_PRICE_3).toLocaleString()}`);
+                    }
+                    break;
+            }
+            
+            // Calculate fabrication cost (always applies)
+            const fabricationCost = countertopSqft * FABRICATION_RATE;
+            breakdown.push(`Fabrication (${countertopSqft} sq ft × $${FABRICATION_RATE}): $${fabricationCost.toLocaleString()}`);
+            
+            const totalCountertopCost = upgradeFee + slabCost + fabricationCost;
+            
+            return {
+                total: totalCountertopCost,
+                upgradeFee: upgradeFee,
+                slabCost: slabCost,
+                fabricationCost: fabricationCost,
+                slabsNeeded: slabsNeeded,
+                extraSlabs: extraSlabs,
+                breakdown: breakdown
+            };
+        }
+        
+        function calculate() {
+            // Get cabinet measurements
+            const baseMain = parseFloat(document.getElementById('base_main').value) || 0;
+            const baseIsland = parseFloat(document.getElementById('base_island').value) || 0;
+            const wall = parseFloat(document.getElementById('wall').value) || 0;
+            
+            // Get countertop values
+            let countertopSqft = parseFloat(document.getElementById('countertop_sqft').value) || 0;
+            
+            // Auto-calculate countertop if it's 0
+            if (countertopSqft === 0) {
+                countertopSqft = autoCalculateCountertop();
+                document.getElementById('countertop_sqft').value = countertopSqft;
+            }
+            
+            // Get add-on quantities
+            const pantry = parseInt(document.getElementById('pantry').value) || 0;
+            const panels = parseInt(document.getElementById('panels').value) || 0;
+            const fillers = parseInt(document.getElementById('fillers').value) || 0;
+            const toekick = parseInt(document.getElementById('toekick').value) || 0;
+            const shelves = parseInt(document.getElementById('shelves').value) || 0;
+            
+            // Get service add-ons
+            const demolition = document.getElementById('demolition').checked;
+            const demolitionBoxes = parseInt(document.getElementById('demolition_boxes').value) || 0;
+            const molding = document.getElementById('molding').checked;
+            const soffit = document.getElementById('soffit').checked;
+            
+            // Get quartz level
+            const quartzLevel = document.querySelector('input[name="quartz_level"]:checked').value;
+            
+            // Calculate cabinet COSTS
+            const baseTotal = baseMain + baseIsland;
+            const priceBase = baseTotal * RATE_BASE;
+            const priceWall = wall * RATE_WALL;
+            
+            // Calculate countertop COST
+            const countertopResult = calculateCountertopCost(countertopSqft, quartzLevel);
+            
+            // Show/hide breakdown based on countertop sq ft
+            const breakdownDiv = document.getElementById('countertop_breakdown');
+            if (countertopSqft > 0) {
+                breakdownDiv.style.display = 'block';
+                
+                // Update breakdown content
+                let breakdownHTML = `<div class="breakdown-title">Countertop Cost Breakdown (${countertopSqft} sq ft, ${countertopResult.slabsNeeded} slabs needed)</div>`;
+                
+                countertopResult.breakdown.forEach(item => {
+                    breakdownHTML += `<div class="breakdown-item">${item}</div>`;
+                });
+                
+                breakdownHTML += `<div class="breakdown-item breakdown-total">Total Countertop Cost: $${countertopResult.total.toLocaleString()}</div>`;
+                document.getElementById('breakdown_content').innerHTML = breakdownHTML;
+            } else {
+                breakdownDiv.style.display = 'none';
+            }
+            
+            // Calculate add-ons COSTS
+            const pricePantry = pantry * PRICE_PANTRY;
+            const pricePanels = panels * PRICE_PANEL;
+            const priceFillers = fillers * PRICE_FILLER;
+            const priceToekick = toekick * PRICE_TOEKICK;
+            const priceShelves = shelves * PRICE_SHELF;
+            
+            // Calculate service add-ons COSTS
+            let priceDemolition = 0;
+            if (demolition) {
+                priceDemolition = PRICE_DEMOLITION_BASE + (demolitionBoxes * PRICE_DEMOLITION_PER_BOX);
+            }
+            const priceMolding = molding ? PRICE_MOLDING : 0;
+            const priceSoffit = soffit ? PRICE_SOFFIT : 0;
+            
+            const addonsCost = pricePantry + pricePanels + priceFillers + 
+                              priceToekick + priceShelves + 
+                              priceDemolition + priceMolding + priceSoffit;
+            
+            // Calculate TOTAL COST (all costs added up)
+            const totalCost = priceBase + priceWall + countertopResult.total + addonsCost;
+            
+            // Calculate FINAL PRICE for 70% profit: Total Cost ÷ 0.30
+            const finalPrice = totalCost / 0.30;
+            
+            // Update display - All shown values are COSTS
+            document.getElementById('price_base').textContent = priceBase.toFixed(2);
+            document.getElementById('price_wall').textContent = priceWall.toFixed(2);
+            document.getElementById('countertop_cost').textContent = countertopResult.total.toFixed(2);
+            document.getElementById('addons_cost').textContent = addonsCost.toFixed(2);
+            document.getElementById('total_cost').textContent = totalCost.toFixed(2);
+            document.getElementById('final_price').textContent = finalPrice.toFixed(2);
+            
+            // Update quartz option visual selection
+            document.querySelectorAll('.quartz-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.querySelector(`input[name="quartz_level"]:checked`).closest('.quartz-option').classList.add('selected');
+            
+            // Show/hide demolition boxes input
+            const demolitionBoxesDiv = document.getElementById('demolition-boxes');
+            if (demolition) {
+                demolitionBoxesDiv.style.display = 'block';
+            } else {
+                demolitionBoxesDiv.style.display = 'none';
+            }
+        }
+        
+        // Track if user manually edited countertop
+        let userManuallyEditedCountertop = false;
+        
+        // Initial calculation and setup
+        window.onload = function() {
+            // Set initial quartz selection
+            selectQuartzLevel(1);
+            
+            // Track manual edits to countertop field
+            document.getElementById('countertop_sqft').addEventListener('input', function() {
+                userManuallyEditedCountertop = true;
+                calculate();
+            });
+            
+            // Update countertop calculation when cabinet measurements change
+            document.getElementById('base_main').addEventListener('input', function() {
+                const autoSqft = autoCalculateCountertop();
+                
+                // Only auto-update if user hasn't manually edited
+                if (!userManuallyEditedCountertop) {
+                    document.getElementById('countertop_sqft').value = autoSqft;
+                }
+                calculate();
+            });
+            
+            document.getElementById('base_island').addEventListener('input', function() {
+                const autoSqft = autoCalculateCountertop();
+                
+                // Only auto-update if user hasn't manually edited
+                if (!userManuallyEditedCountertop) {
+                    document.getElementById('countertop_sqft').value = autoSqft;
+                }
+                calculate();
+            });
+            
+            // Reset manual edit flag when countertop field is cleared
+            document.getElementById('countertop_sqft').addEventListener('focus', function() {
+                const currentValue = parseFloat(this.value) || 0;
+                if (currentValue === 0) {
+                    userManuallyEditedCountertop = false;
+                }
+            });
+            
+            // Initial calculation
+            calculate();
+        };
+    </script>
+</body>
+</html>
