@@ -331,6 +331,12 @@
             margin-top: 5px;
             border-left: 3px solid #4caf50;
         }
+        
+        .price-per-slab {
+            font-size: 11px;
+            color: #666;
+            margin-top: 2px;
+        }
     </style>
 </head>
 <body>
@@ -397,27 +403,30 @@
                     <input type="radio" id="quartz_level1" name="quartz_level" value="1" checked onchange="calculate()">
                     <div class="quartz-label">
                         <div class="quartz-title">Level 1 - Basic Quartz</div>
-                        <div class="quartz-desc">1st slab included, extra slabs: $600 each</div>
+                        <div class="quartz-desc">Every slab: $600 for 56 sq ft</div>
+                        <div class="price-per-slab">$600 per slab</div>
                     </div>
-                    <div class="quartz-price">$0 upgrade</div>
+                    <div class="quartz-price">$600/slab</div>
                 </div>
                 
                 <div class="quartz-option" onclick="selectQuartzLevel(2)">
                     <input type="radio" id="quartz_level2" name="quartz_level" value="2" onchange="calculate()">
                     <div class="quartz-label">
                         <div class="quartz-title">Level 2 - Mid-Level Quartz</div>
-                        <div class="quartz-desc">Upgrade 1st slab: +$600, extra: $1,200 each</div>
+                        <div class="quartz-desc">Every slab: $1,200 for 56 sq ft</div>
+                        <div class="price-per-slab">$1,200 per slab</div>
                     </div>
-                    <div class="quartz-price">+$600</div>
+                    <div class="quartz-price">$1,200/slab</div>
                 </div>
                 
                 <div class="quartz-option" onclick="selectQuartzLevel(3)">
                     <input type="radio" id="quartz_level3" name="quartz_level" value="3" onchange="calculate()">
                     <div class="quartz-label">
                         <div class="quartz-title">Level 3 - High-Level Quartz</div>
-                        <div class="quartz-desc">Upgrade 1st slab: +$1,100, extra: $1,700 each</div>
+                        <div class="quartz-desc">Every slab: $1,700 for 56 sq ft</div>
+                        <div class="price-per-slab">$1,700 per slab</div>
                     </div>
-                    <div class="quartz-price">+$1,100</div>
+                    <div class="quartz-price">$1,700/slab</div>
                 </div>
             </div>
             
@@ -430,7 +439,8 @@
             
             <div class="note" style="margin-top: 15px;">
                 <strong>Fabrication/Installation:</strong> +$25 per sq ft (always applies)<br>
-                <strong>Slab size:</strong> 56 sq ft each (always round up)
+                <strong>Slab size:</strong> 56 sq ft each (always round up)<br>
+                <strong>Important:</strong> Every slab is paid for - no "first slab included"
             </div>
         </div>
         
@@ -590,13 +600,10 @@
         const SLAB_SIZE = 56; // 56 sq ft per slab
         const FABRICATION_RATE = 25; // $25 per sq ft
         
-        // Quartz level pricing (COSTS)
-        const UPGRADE_LEVEL_2 = 600;  // $600 upgrade for first slab
-        const UPGRADE_LEVEL_3 = 1100; // $1,100 upgrade for first slab
-        
-        const SLAB_PRICE_1 = 600;  // Level 1 extra slab cost
-        const SLAB_PRICE_2 = 1200; // Level 2 extra slab cost
-        const SLAB_PRICE_3 = 1700; // Level 3 extra slab cost
+        // NEW: Simple slab pricing - every slab costs the same within each level
+        const SLAB_PRICE_LEVEL_1 = 600;   // Every slab costs $600
+        const SLAB_PRICE_LEVEL_2 = 1200;  // Every slab costs $1,200
+        const SLAB_PRICE_LEVEL_3 = 1700;  // Every slab costs $1,700
 
         function selectQuartzLevel(level) {
             document.getElementById(`quartz_level${level}`).checked = true;
@@ -622,58 +629,44 @@
         function calculateCountertopCost(countertopSqft, quartzLevel) {
             // Calculate slabs needed (always round UP)
             const slabsNeeded = Math.ceil(countertopSqft / SLAB_SIZE);
-            const extraSlabs = slabsNeeded - 1;
             
-            let upgradeFee = 0;
-            let slabCost = 0;
+            let slabPrice = 0;
             let breakdown = [];
             
-            // Calculate costs based on quartz level
+            // NEW: Simple pricing - every slab costs the same based on level
             switch(quartzLevel) {
                 case "1": // Level 1 - Basic Quartz
-                    upgradeFee = 0;
-                    slabCost = extraSlabs * SLAB_PRICE_1;
-                    
-                    breakdown.push(`First slab (${SLAB_SIZE} sq ft): Included in base price`);
-                    if (extraSlabs > 0) {
-                        breakdown.push(`${extraSlabs} extra slab(s) × $${SLAB_PRICE_1.toLocaleString()}: $${(extraSlabs * SLAB_PRICE_1).toLocaleString()}`);
-                    }
+                    slabPrice = SLAB_PRICE_LEVEL_1;
                     break;
                     
                 case "2": // Level 2 - Mid-Level Quartz
-                    upgradeFee = UPGRADE_LEVEL_2;
-                    slabCost = extraSlabs * SLAB_PRICE_2;
-                    
-                    breakdown.push(`Upgrade first slab to Level 2: $${UPGRADE_LEVEL_2.toLocaleString()}`);
-                    if (extraSlabs > 0) {
-                        breakdown.push(`${extraSlabs} extra slab(s) × $${SLAB_PRICE_2.toLocaleString()}: $${(extraSlabs * SLAB_PRICE_2).toLocaleString()}`);
-                    }
+                    slabPrice = SLAB_PRICE_LEVEL_2;
                     break;
                     
                 case "3": // Level 3 - High-Level Quartz
-                    upgradeFee = UPGRADE_LEVEL_3;
-                    slabCost = extraSlabs * SLAB_PRICE_3;
-                    
-                    breakdown.push(`Upgrade first slab to Level 3: $${UPGRADE_LEVEL_3.toLocaleString()}`);
-                    if (extraSlabs > 0) {
-                        breakdown.push(`${extraSlabs} extra slab(s) × $${SLAB_PRICE_3.toLocaleString()}: $${(extraSlabs * SLAB_PRICE_3).toLocaleString()}`);
-                    }
+                    slabPrice = SLAB_PRICE_LEVEL_3;
                     break;
             }
+            
+            // Calculate total slab cost
+            const totalSlabCost = slabsNeeded * slabPrice;
+            
+            // Add to breakdown
+            breakdown.push(`${slabsNeeded} slab(s) × $${slabPrice.toLocaleString()} each: $${totalSlabCost.toLocaleString()}`);
+            breakdown.push(`(Each slab: ${SLAB_SIZE} sq ft, Total needed: ${countertopSqft} sq ft)`);
             
             // Calculate fabrication cost (always applies)
             const fabricationCost = countertopSqft * FABRICATION_RATE;
             breakdown.push(`Fabrication (${countertopSqft} sq ft × $${FABRICATION_RATE}): $${fabricationCost.toLocaleString()}`);
             
-            const totalCountertopCost = upgradeFee + slabCost + fabricationCost;
+            const totalCountertopCost = totalSlabCost + fabricationCost;
             
             return {
                 total: totalCountertopCost,
-                upgradeFee: upgradeFee,
-                slabCost: slabCost,
+                slabCost: totalSlabCost,
                 fabricationCost: fabricationCost,
                 slabsNeeded: slabsNeeded,
-                extraSlabs: extraSlabs,
+                slabPrice: slabPrice,
                 breakdown: breakdown
             };
         }
@@ -714,8 +707,7 @@
             const priceBase = baseTotal * RATE_BASE;
             const priceWall = wall * RATE_WALL;
             
-            // Calculate cabinet INSTALLATION cost (NEW)
-            // Formula: (base walls + base island + wall cabinets) × $20
+            // Calculate cabinet INSTALLATION cost
             const totalLinearFeet = baseMain + baseIsland + wall;
             const installationCost = totalLinearFeet * INSTALLATION_RATE;
             
